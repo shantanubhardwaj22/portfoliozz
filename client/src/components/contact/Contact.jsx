@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Mail, Linkedin, ArrowUpRight } from "lucide-react";
+import { Mail, ArrowUpRight } from "lucide-react";
 
 function Contact() {
   return (
@@ -109,7 +109,7 @@ function Contact() {
                 <div className="flex items-center gap-4">
 
                   <div className="w-11 h-11 rounded-xl bg-gray-900 flex items-center justify-center">
-                    <Linkedin size={20} />
+                    <span className="text-sm font-medium">in</span>
                   </div>
 
                   <div>
