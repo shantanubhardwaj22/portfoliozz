@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { usePortfolio } from "../../context/PortfolioContext";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   DndContext,
   closestCenter,
@@ -31,6 +34,7 @@ import {
   Layers,
   Star,
 } from "lucide-react";
+
 
 
 function SortableSection({
@@ -117,16 +121,14 @@ function SortableSection({
      <div className="flex items-center gap-1">
 
             {/* Preview */}
-            <button
-              onClick={() =>
-                window.location.href = `/admin/sections/preview/${section.id}`
-              }
-              className="p-2.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-900 transition-colors"
+                    
+            <Link
+              to={`/admin/sections/preview/${section.id}`}
+              className="p-2.5 rounded-lg text-gray-500 hover:text-white hover:bg-gray-900 transition-colors inline-flex items-center justify-center"
               title="Preview"
             >
               <Eye size={17} />
-            </button>
-
+            </Link>
             {/* Edit */}
             <button
               onClick={() => handleEditSection(section)}
@@ -151,54 +153,12 @@ function SortableSection({
           }
 
 function Sections() {
+  const navigate = useNavigate();
+  
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
   const [editingSection, setEditingSection] = useState(null);
-
-        const [sections, setSections] = useState([
-        {
-          id: 1,
-          title: "Hero",
-          type: "Hero Section",
-          visible: true,
-          order: 1,
-        },
-        {
-          id: 2,
-          title: "About",
-          type: "Text + Image",
-          visible: true,
-          order: 2,
-        },
-        {
-          id: 3,
-          title: "Skills",
-          type: "Skills",
-          visible: true,
-          order: 3,
-        },
-        {
-          id: 4,
-          title: "Experience",
-          type: "Timeline",
-          visible: true,
-          order: 4,
-        },
-        {
-          id: 5,
-          title: "Projects",
-          type: "Project Showcase",
-          visible: true,
-          order: 5,
-        },
-        {
-          id: 6,
-          title: "Contact",
-          type: "Contact",
-          visible: true,
-          order: 6,
-        },
-      ]);
+  const { sections, setSections } = usePortfolio();
   const sectionTypes = [
     {
       name: "Text",
@@ -237,25 +197,24 @@ function Sections() {
     },
   ];
       const handleSaveSection = (sectionData) => {
+         console.log("SAVED SECTION DATA:", sectionData);
         // EDIT MODE
-        if (editingSection) {
-          setSections((currentSections) =>
-            currentSections.map((section) =>
-              section.id === editingSection.id
-                ? {
-                    ...section,
-                    title:
-                      sectionData.title ||
-                      `New ${sectionData.type}`,
-                    type: sectionData.type,
-                    content: sectionData.content,
-                    style: sectionData.style,
-                    animation: sectionData.animation,
-                  }
-                : section
-            )
-          );
-        }
+      if (editingSection) {
+        setSections((currentSections) =>
+          currentSections.map((section) =>
+            section.id === editingSection.id
+              ? {
+                  ...section,
+                  title: sectionData.title || `New ${sectionData.type}`,
+                  type: sectionData.type,
+                  content: sectionData.content,
+                  style: sectionData.style,
+                  animation: sectionData.animation,
+                }
+              : section
+          )
+        );
+      }
 
         // CREATE MODE
         else {

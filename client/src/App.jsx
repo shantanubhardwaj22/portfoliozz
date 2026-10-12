@@ -10,10 +10,11 @@ import Settings from "./pages/admin/Settings";
 
 import AdminLayout from "./layouts/AdminLayout";
 import Preview from "./pages/admin/Preview";
-
+import { PortfolioProvider } from "./context/PortfolioContext";
 
 function App() {
   return (
+  <PortfolioProvider>
     <BrowserRouter>
 
       <Routes>
@@ -54,6 +55,7 @@ function App() {
       </Routes>
 
     </BrowserRouter>
+  </PortfolioProvider>
   );
 }
 

@@ -1,34 +1,38 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Eye } from "lucide-react";
 import { motion } from "framer-motion";
+import { usePortfolio } from "../../context/PortfolioContext";
+
 
 function Preview() {
   const navigate = useNavigate();
-  const { id } = useParams();
+    const { sections } = usePortfolio();
+    const { id } = useParams();
 
-  // Temporary data.
-  // Later this will come from MongoDB using the id.
-  const section = {
-    id,
-    title: "My Gallery",
-    type: "Gallery",
-    content: {
-      description: "This is a preview of my portfolio section.",
-    },
-    style: {
-      backgroundType: "gradient",
-      backgroundColor: "#171e30",
-      textColor: "#ffffff",
-      cardStyle: "glass",
-    },
-    animation: {
-      type: "fade-up",
-      duration: 600,
-    },
-  };
+    const section = sections.find(
+      (item) => String(item.id) === String(id)
+    );
+    console.log("PREVIEW SECTION:", section);
+    const sectionStyle = section?.style || {
+          backgroundType: "solid",
+          backgroundColor: "#171e30",
+          textColor: "#ffffff",
+          cardStyle: "classic",
+        };
+
+        const sectionAnimation = section?.animation || {
+          type: "fade-up",
+          duration: 600,
+        };
+
+        const sectionContent = section?.content || {
+          description: "",
+        };
+
+
 
   const getInitialAnimation = () => {
-    switch (section.animation.type) {
+    switch (sectionAnimation.type) {
       case "fade-up":
         return { opacity: 0, y: 30 };
 
@@ -48,15 +52,31 @@ function Preview() {
         return { opacity: 1 };
     }
   };
+const getBackground = () => {
+  if (sectionStyle.backgroundType === "gradient") {
+    return `linear-gradient(135deg, ${sectionStyle.backgroundColor}, #1e293b)`;
+  }
 
-  const getBackground = () => {
-    if (section.style.backgroundType === "gradient") {
-      return `linear-gradient(135deg, ${section.style.backgroundColor}, #1e293b)`;
-    }
+  return sectionStyle.backgroundColor;
+};
+      if (!section) {
+        return (
+          <div className="min-h-screen bg-[#0b0d10] text-white flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-2xl font-semibold">
+                Section not found
+              </h1>
 
-    return section.style.backgroundColor;
-  };
-
+              <button
+                onClick={() => navigate("/admin/sections")}
+                className="mt-5 px-5 py-3 rounded-xl bg-white text-black"
+              >
+                Back to Sections
+              </button>
+            </div>
+          </div>
+        );
+      }
   return (
     <div className="min-h-screen bg-[#0b0d10] text-white">
 
@@ -101,13 +121,13 @@ function Preview() {
               scale: 1,
             }}
             transition={{
-              duration: section.animation.duration / 1000,
+              duration: sectionAnimation.duration / 1000,
               ease: "easeOut",
             }}
             className="min-h-[500px] rounded-3xl overflow-hidden flex items-center justify-center p-8 md:p-16"
             style={{
               background: getBackground(),
-              color: section.style.textColor,
+              color: sectionStyle.textColor,
             }}
           >
 
@@ -122,7 +142,7 @@ function Preview() {
               </h2>
 
               <p className="mt-5 max-w-2xl text-lg opacity-70 leading-relaxed">
-                {section.content.description}
+                {sectionContent.description}
               </p>
 
               {section.type === "Gallery" && (
